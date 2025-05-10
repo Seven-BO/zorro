@@ -1,0 +1,111 @@
+<div class="custom-image-cropper">
+  <nz-upload
+    [nzBeforeUpload]="beforeUpload"
+    [nzShowUploadList]="false"
+    [nzFileList]="fileList"
+  >
+    <button nz-button>
+      <i nz-icon nzType="upload" nzTheme="outline"></i>
+      Select image
+    </button>
+  </nz-upload>
+
+  <nz-modal
+    [nzVisible]="isVisible"
+    [nzTitle]="modalTitle"
+    [nzFooter]="modalFooter"
+    (nzOnCancel)="handleCancel()"
+    [nzWidth]="700"
+    [nzBodyStyle]="{ padding: '24px' }"
+  >
+    <ng-template #modalTitle>
+      <div class="modal-title">
+        <span>Crop image</span>
+        <span *ngIf="loading" class="loading-indicator">
+          <i nz-icon nzType="loading" nzTheme="outline" nzSpin></i>
+        </span>
+      </div>
+    </ng-template>
+
+    <ng-container *nzModalContent>
+      <nz-card class="cropper-container">
+        <div class="cropper-wrapper">
+          <image-cropper
+            [imageChangedEvent]="imageChangedEvent"
+            [transform]="currentTransform"
+            (imageCropped)="imageCropped($event)"
+            (imageLoaded)="imageLoaded($event)"
+            (cropperReady)="cropperReady()"
+            (loadImageFailed)="loadImageFailed()"
+          ></image-cropper>
+        </div>
+
+        <nz-divider></nz-divider>
+
+        <div class="controls">
+          <div class="control-section">
+            <span>Rotation:</span>
+            <div class="buttons-row">
+              <button nz-button nzType="default" (click)="rotateLeft()">
+                <i nz-icon nzType="rotate-left" nzTheme="outline"></i>
+              </button>
+              <button nz-button nzType="default" (click)="rotateRight()">
+                <i nz-icon nzType="rotate-right" nzTheme="outline"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <span>Flip:</span>
+            <div class="buttons-row">
+              <button nz-button nzType="default" (click)="flipHorizontal()">
+                <i nz-icon nzType="swap" nzTheme="outline" [nzRotate]="90"></i>
+              </button>
+              <button nz-button nzType="default" (click)="flipVertical()">
+                <i nz-icon nzType="swap" nzTheme="outline"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <span>Scala:</span>
+            <nz-slider
+              [(ngModel)]="scaleValue"
+              [nzMin]="0.5"
+              [nzMax]="2"
+              [nzStep]="0.1"
+              (ngModelChange)="onScaleChange($event)"
+            ></nz-slider>
+          </div>
+
+          <div class="control-section">
+            <button nz-button nzType="default" (click)="resetImage()">
+              <i nz-icon nzType="reload" nzTheme="outline"></i> reboot
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="croppedImageResult" class="preview">
+          <nz-divider nzText="Vista previa"></nz-divider>
+          <div class="preview-image">
+            <img [src]="croppedImageResult" [alt]="'Vista previa'" />
+          </div>
+        </div>
+      </nz-card>
+    </ng-container>
+
+    <ng-template #modalFooter>
+      <button nz-button nzType="default" (click)="handleCancel()">
+        cancel
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        (click)="handleOk()"
+        [disabled]="!croppedImageResult"
+      >
+        accept
+      </button>
+    </ng-template>
+  </nz-modal>
+</div>

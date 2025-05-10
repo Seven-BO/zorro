@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'zorro';
+  title = 'Editor de Imágenes con Ng-Zorro';
+  croppedImage: string = '';
+
+  constructor(private message: NzMessageService) {}
+
+  onCroppedImage(image: string): void {
+    this.croppedImage = image;
+  }
 }
